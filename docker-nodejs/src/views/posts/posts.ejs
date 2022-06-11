@@ -1,0 +1,29 @@
+<%- include('../partials/navigation') %>
+<link rel="stylesheet" href="/stylesheets/style.css">
+<% postContents.forEach(postContent => { %>
+  <div class="container">
+    <div id="title">
+      <%= postContent.title %>
+    </div>
+    <div id="contents">
+      <%= postContent.contents %>
+    </div>
+    <% authors.forEach(author => { %>
+      <% if (postContent.userId === author.id) { %>
+        <div id="author">
+          投稿者: <%= author.username %>
+        </div>
+      <% } %>
+      <% if (postContent.userId === author.id && currentUser.username === author.username) { %>
+        <div id="form">
+          <form action="<%=`/posts/${postContent.id}/update`%>" method="get" id="submit">
+            <input type="submit" value="編集">
+          </form>
+          <form action="<%=`/posts/${postContent.id}/delete`%>" method="post" id="submit">
+            <input type="submit" value="削除">
+          </form>
+        </div>
+      <% } %>
+    <% }); %>
+  </div>
+<% }); %>

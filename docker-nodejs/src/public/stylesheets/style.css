@@ -1,0 +1,13 @@
+.container {
+  padding: 0.5em 1em;
+  margin: 2em 0;
+  border: solid 1px #000000;
+}
+
+#title {
+  font-size: 20px;
+}
+
+#submit {
+  display: inline-block;
+}

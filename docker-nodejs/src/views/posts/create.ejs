@@ -1,0 +1,14 @@
+<%- include('../partials/navigation') %>
+<form action="<%=`/posts/${currentUser.id}/create`%>" method="post">
+  <div>
+    <p>タイトル</p>
+    <input type="text" name="title" required>
+  </div>
+  <div>
+    <p>コンテンツ</p>
+    <input type="text" name="contents" required>
+  </div>
+  <div>
+    <input type="submit" value="新規投稿">
+  </div>
+</form>

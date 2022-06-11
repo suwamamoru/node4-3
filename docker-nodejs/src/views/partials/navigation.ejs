@@ -1,0 +1,16 @@
+<nav>
+  <header>
+    <label>Node.js Lesson4</label>
+    <% if(loggedIn) { %>
+      <a href="/posts/posts">みんなの投稿</a>
+      <a href="/posts/create">投稿を作成</a>
+      <form action="/auth/logout" method="post">
+        ログインユーザ：<%= currentUser.username %>
+        <input type="submit" value="Logout">
+      </form>
+    <% } else { %>
+      <a href="/auth/login">Login</a>
+      <a href="/auth/register">Register</a>
+    <% } %>
+  </header>
+</nav>

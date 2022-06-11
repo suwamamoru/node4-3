@@ -1,0 +1,14 @@
+<%- include('../partials/navigation') %>
+<form action="<%=`/posts/${id}/update`%>" method="post">
+  <div>
+    <p>タイトル</p>
+    <input type="text" name="title" value="<%= title %>" required>
+  </div>
+  <div>
+    <p>コンテンツ</p>
+    <input type="text" name="contents" value="<%= contents %>" required>
+  </div>
+  <div>
+    <input type="submit" value="編集完了">
+  </div>
+</form>
