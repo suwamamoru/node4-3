@@ -1,0 +1,24 @@
+.thumbs-up-current-user {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #fb0023;
+}
+
+.thumbs-up-another-user {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #e4e4e4;
+}
+
+#thumbs-up {
+  border: none;
+  background: transparent;
+}
+
+.material-icons:hover {
+  color: #fb0023;
+}

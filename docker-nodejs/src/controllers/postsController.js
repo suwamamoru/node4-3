@@ -2,6 +2,7 @@
 
 const User = require('../models').User,
       Post = require('../models').Post,
+      ThumbsUp = require('../models').ThumbsUp,
       { validationResult } = require('express-validator');
 
 module.exports = {
@@ -31,17 +32,53 @@ module.exports = {
       });
   },
 
+  findAllThumbsUps: (req, res, next) => {
+    ThumbsUp.findAll()
+      .then(thumbsUps => {
+        const thumbsUpsJson = JSON.stringify(thumbsUps);
+        res.locals.thumbsUps = JSON.parse(thumbsUpsJson);
+        next();
+      })
+      .catch(error => {
+        console.log(`Error fetching thumbsUps: ${error.message}`);
+        next(error);
+      });
+  },
+
   shapingData: (req, res, next) => {
     const users = res.locals.users,
-          posts = res.locals.posts;
+          posts = res.locals.posts,
+          thumbsUps = res.locals.thumbsUps;
     const authors = users.map(user => {
       return user;
     });
     const postContents = posts.map(content => {
       return content;
     });
+    const thumbsUpsCount = thumbsUps.map(thumbsUp => {
+      return thumbsUp;
+    });
+    const currentUserThumbsUpsPosts = [];
+    thumbsUpsCount.forEach(thumbsUp => {
+      if (thumbsUp.userId === res.locals.currentUser.id) {
+      currentUserThumbsUpsPosts.push(thumbsUp.postId);
+      }
+    })
+    const thumbsUpsCounter = [];
+    postContents.forEach((postContent, i) => {
+      const matchPostId = thumbsUpsCount.filter(thumbsUp => {
+        if (postContent.id === thumbsUp.postId) return true;
+      });
+      thumbsUpsCounter.push(matchPostId.length);
+      postContent.thumbsUps = thumbsUpsCounter[i];
+      if (currentUserThumbsUpsPosts.includes(postContent.id)) {
+        postContent.thumbsUpCurrentUser = true;
+      } else {
+        postContent.thumbsUpCurrentUser = false;
+      }
+    });
     res.locals.authors = authors;
-    res.locals.postContents = postContents
+    res.locals.postContents = postContents;
     next();
   },
 
@@ -117,11 +154,26 @@ module.exports = {
       });
   },
 
-  delete: (req, res) => {
+  delete: (req, res, next) => {
     const id = req.params.id;
     Post.findByPk(id)
       .then(post => {
         post.destroy();
+        next();
+      })
+      .catch(error => {
+        console.log(error);
+        next(error);
+      });
+  },
+
+  deleteThumbsUp: (req, res) => {
+    ThumbsUp.destroy({
+      where: {
+        postId: req.params.id
+      }
+    })
+      .then(() => {
         res.redirect('/posts/posts');
       })
       .catch(error => {

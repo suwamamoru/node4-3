@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         onUpdate: 'cascade',
         onDelete: 'cascade'
-      })
+      });
+      Post.belongsToMany(models.User, { through: models.ThumbsUp, foreignKey: 'userId'});
     }
   }
   Post.init({

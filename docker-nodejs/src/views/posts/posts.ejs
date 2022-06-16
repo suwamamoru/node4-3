@@ -1,5 +1,7 @@
 <%- include('../partials/navigation') %>
-<link rel="stylesheet" href="/stylesheets/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Round">
+<link rel="stylesheet" href="/stylesheets/posts.css">
+<link rel="stylesheet" href="/stylesheets/thumbsUps.css">
 <% postContents.forEach(postContent => { %>
   <div class="container">
     <div id="title">
@@ -12,6 +14,27 @@
       <% if (postContent.userId === author.id) { %>
         <div id="author">
           投稿者: <%= author.username %>
+        </div>
+        <div id="thumbs-up-wrap">
+          <% if (postContent.thumbsUpCurrentUser === true) { %>
+            <form action="<%=`/thumbsUps/${postContent.id}/thumbsUps`%>" method="post">
+              <button type="submit" id="thumbs-up">
+                <div class="thumbs-up-current-user">
+                  <i class="material-icons heart">favorite</i>
+                  <span><%= postContent.thumbsUps %></span>
+                </div>
+              </button>
+            </form>
+          <% } else { %>
+            <form action="<%=`/thumbsUps/${postContent.id}/thumbsUps`%>" method="post">
+              <button type="submit" id="thumbs-up">
+                <div class="thumbs-up-another-user">
+                  <i class="material-icons heart">favorite</i>
+                  <span><%= postContent.thumbsUps %></span>
+                </div>
+              </button>
+            </form>
+          <% } %>
         </div>
       <% } %>
       <% if (postContent.userId === author.id && currentUser.username === author.username) { %>
