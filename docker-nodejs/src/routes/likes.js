@@ -3,14 +3,18 @@
 const express = require('express'),
       router = express.Router(),
       usersController = require('../controllers/usersController'),
-      thumbsUpsController = require('../controllers/thumbsUpsController');
+      likesController = require('../controllers/likesController');
 
 router.post(
-  '/:id/thumbsUps',
+  '/:postId/likes',
   usersController.isAuthenticated,
-  thumbsUpsController.thumbsUps,
-  thumbsUpsController.create,
-  thumbsUpsController.delete
+  likesController.create
 );
+
+router.post(
+  '/:postId/likes/:userId',
+  usersController.isAuthenticated,
+  likesController.delete
+)
 
 module.exports = router;

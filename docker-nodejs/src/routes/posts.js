@@ -11,7 +11,6 @@ router.get(
   usersController.isAuthenticated,
   postsController.findAllUsers,
   postsController.findAllPosts,
-  postsController.findAllThumbsUps,
   postsController.shapingData,
   postsController.posts
 );
@@ -47,8 +46,7 @@ router.post(
 router.post(
   '/:id/delete',
   usersController.isAuthenticated,
-  postsController.delete,
-  postsController.deleteThumbsUp
+  postsController.delete
 );
 
 module.exports = router;

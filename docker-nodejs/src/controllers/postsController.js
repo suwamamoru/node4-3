@@ -2,7 +2,7 @@
 
 const User = require('../models').User,
       Post = require('../models').Post,
-      ThumbsUp = require('../models').ThumbsUp,
+      Like = require('../models').Like,
       { validationResult } = require('express-validator');
 
 module.exports = {
@@ -20,7 +20,12 @@ module.exports = {
   },
 
   findAllPosts: (req, res, next) => {
-    Post.findAll()
+    Post.findAll({
+      include: {
+        model: Like,
+        required: false
+      }
+    })
       .then(posts => {
         const postsJson = JSON.stringify(posts);
         res.locals.posts = JSON.parse(postsJson);
@@ -32,51 +37,26 @@ module.exports = {
       });
   },
 
-  findAllThumbsUps: (req, res, next) => {
-    ThumbsUp.findAll()
-      .then(thumbsUps => {
-        const thumbsUpsJson = JSON.stringify(thumbsUps);
-        res.locals.thumbsUps = JSON.parse(thumbsUpsJson);
-        next();
-      })
-      .catch(error => {
-        console.log(`Error fetching thumbsUps: ${error.message}`);
-        next(error);
-      });
-  },
-
   shapingData: (req, res, next) => {
     const users = res.locals.users,
-          posts = res.locals.posts,
-          thumbsUps = res.locals.thumbsUps;
+          posts = res.locals.posts;
     const authors = users.map(user => {
       return user;
     });
     const postContents = posts.map(content => {
       return content;
     });
-    const thumbsUpsCount = thumbsUps.map(thumbsUp => {
-      return thumbsUp;
-    });
-    const currentUserThumbsUpsPosts = [];
-    thumbsUpsCount.forEach(thumbsUp => {
-      if (thumbsUp.userId === res.locals.currentUser.id) {
-      currentUserThumbsUpsPosts.push(thumbsUp.postId);
+    postContents.forEach(postContent => {
+      let likeUser = [];
+      postContent.Likes.forEach(like => {
+        likeUser.push(like.userId);
+      })
+      if (likeUser.includes(res.locals.currentUser.id)) {
+        postContent.likeCurrentUser = true;
+      } else {
+        postContent.likeCurrentUser = false;
       }
     })
-    const thumbsUpsCounter = [];
-    postContents.forEach((postContent, i) => {
-      const matchPostId = thumbsUpsCount.filter(thumbsUp => {
-        if (postContent.id === thumbsUp.postId) return true;
-      });
-      thumbsUpsCounter.push(matchPostId.length);
-      postContent.thumbsUps = thumbsUpsCounter[i];
-      if (currentUserThumbsUpsPosts.includes(postContent.id)) {
-        postContent.thumbsUpCurrentUser = true;
-      } else {
-        postContent.thumbsUpCurrentUser = false;
-      }
-    });
     res.locals.authors = authors;
     res.locals.postContents = postContents;
     next();
@@ -154,26 +134,12 @@ module.exports = {
       });
   },
 
-  delete: (req, res, next) => {
+  delete: (req, res) => {
     const id = req.params.id;
     Post.findByPk(id)
       .then(post => {
         post.destroy();
-        next();
-      })
-      .catch(error => {
-        console.log(error);
-        next(error);
-      });
-  },
-
-  deleteThumbsUp: (req, res) => {
-    ThumbsUp.destroy({
-      where: {
-        postId: req.params.id
-      }
-    })
-      .then(() => {
+        req.flash('success', '投稿を削除しました。')
         res.redirect('/posts/posts');
       })
       .catch(error => {

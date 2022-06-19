@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Post, {
         foreignKey: 'userId'
       });
-      User.belongsToMany(models.Post, { through: models.ThumbsUp, foreignKey: 'postId'});
+      User.belongsToMany(models.Post, { through: models.Like, foreignKey: 'postId'});
     }
   }
   User.init({

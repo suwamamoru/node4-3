@@ -1,4 +1,4 @@
-.thumbs-up-current-user {
+.like-current-user {
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -6,7 +6,7 @@
   color: #fb0023;
 }
 
-.thumbs-up-another-user {
+.like-another-user {
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@
   color: #e4e4e4;
 }
 
-#thumbs-up {
+#like {
   border: none;
   background: transparent;
 }
