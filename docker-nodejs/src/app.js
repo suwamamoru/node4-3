@@ -34,17 +34,10 @@ app.use(
 );
 app.use(express.static(path.join(__dirname, 'public')));
 
-// passportを初期化
 app.use(passport.initialize());
-
-// passportをセッションで使用
 app.use(passport.session());
-
-// passportの設定を使用
 require('./middleware/passport')(app);
 
-// ログアウト後、ページが再読み込みされキャッシュされない。
-// その結果、戻るボタンを押してもダッシュボードに戻らない。
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
   next();

@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.Post, {
         foreignKey: 'userId'
-      })
+      });
+      User.belongsToMany(models.Post, { through: models.Like, foreignKey: 'postId'});
     }
   }
   User.init({

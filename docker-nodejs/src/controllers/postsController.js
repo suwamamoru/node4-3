@@ -2,6 +2,7 @@
 
 const User = require('../models').User,
       Post = require('../models').Post,
+      Like = require('../models').Like,
       { validationResult } = require('express-validator');
 
 module.exports = {
@@ -19,7 +20,12 @@ module.exports = {
   },
 
   findAllPosts: (req, res, next) => {
-    Post.findAll()
+    Post.findAll({
+      include: {
+        model: Like,
+        required: false
+      }
+    })
       .then(posts => {
         const postsJson = JSON.stringify(posts);
         res.locals.posts = JSON.parse(postsJson);
@@ -40,8 +46,19 @@ module.exports = {
     const postContents = posts.map(content => {
       return content;
     });
+    postContents.forEach(postContent => {
+      let likeUser = [];
+      postContent.Likes.forEach(like => {
+        likeUser.push(like.userId);
+      })
+      if (likeUser.includes(res.locals.currentUser.id)) {
+        postContent.likeCurrentUser = true;
+      } else {
+        postContent.likeCurrentUser = false;
+      }
+    })
     res.locals.authors = authors;
-    res.locals.postContents = postContents
+    res.locals.postContents = postContents;
     next();
   },
 
@@ -122,6 +139,7 @@ module.exports = {
     Post.findByPk(id)
       .then(post => {
         post.destroy();
+        req.flash('success', '投稿を削除しました。')
         res.redirect('/posts/posts');
       })
       .catch(error => {

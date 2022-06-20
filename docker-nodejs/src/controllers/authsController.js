@@ -36,14 +36,14 @@ module.exports = {
             if (user) {
               next();
             } else {
-              res.status(httpStatus.FORBIDDEN).json({
+              res.status(403).json({
                 error: true,
                 message: "No User account found."
               });
             }
           });
         } else {
-          res.status(httpStatus.UNAUTHORIZED).json({
+          res.status(401).json({
             error: true,
             message: "Cannot verify API token."
           });
@@ -51,7 +51,7 @@ module.exports = {
         }
       });
     } else {
-      res.status(httpStatus.UNAUTHORIZED).json({
+      res.status(401).json({
         error: true,
         message: "Provide Token"
       });
